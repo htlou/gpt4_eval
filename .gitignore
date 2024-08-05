@@ -16,7 +16,8 @@ show*
 single*
 *.txt
 statics.py
-
+web_utils.py
+utils.py
 *.jsonl
 
 ##### Python.gitignore #####
