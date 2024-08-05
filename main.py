@@ -1,4 +1,4 @@
-from utils import *
+from utils_openai import *
 
 def main() -> None:
     os.environ['PYTHONHASHSEED'] = '0'
@@ -51,13 +51,9 @@ def main() -> None:
     print(len(openai_api_keys), args.num_cpus)
 
     print(openai_api_keys)
-    # print(inputs)
-    # ray.init(num_cpus=len(openai_api_keys) * args.num_cpus)
-    # ray.init(namespace='evaluation')
+
     ray.init()
-    # ray.init(port=6379)
-    # ray.init()
-    # print(args.type)
+
     results = batch_request_openai(
         type=args.type,
         inputs=inputs,
