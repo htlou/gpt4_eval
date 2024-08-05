@@ -132,12 +132,14 @@ def bean_gpt_api(
 
 
     messages = input
+    # print(len(messages[1]['content'][0]['image_url']['url']))
     output = {}
-    output['message'] = input
+    output['message'] = None
     output['model'] = openai_model
 
     # openai_api = 'https://apejhvxcd.cloud.sealos.io'
-    openai_api = 'https://wdapi5.61798.cn'
+    #openai_api = 'https://wdapi5.61798.cn'
+    openai_api = 'https://api.61798.cn'
 
     headers = {
         'Content-Type': 'application/json',
@@ -176,6 +178,7 @@ def bean_gpt_api(
     #     retries=retry_strategy,
     # )
     encoded_data = json.dumps(params_gpt).encode('utf-8')
+    # print(len(encoded_data))
 
     print('Bean Proxy API Called...')
 
@@ -183,16 +186,17 @@ def bean_gpt_api(
     session = requests.Session()
     session.mount("https://", adapter)
     session.mount("http://", adapter)
-    max_try = 2
+    max_try = 5
     while max_try > 0:
         try:
-            response = session.post(url, headers=headers, data=json.dumps(params_gpt), timeout=(5, 25))
+            response = session.post(url, headers=headers, data=json.dumps(params_gpt), timeout=(15, 150))
             if response.status_code == 200:
                 response = json.loads(response.text)['choices'][0]['message']['content']
                 # print(response)
                 logging.info(response)
                 break
-            err_msg = f'Access openai error, Key platform Bean, Key id: {openai_api_keys}, status code: {response.status_code}, status info : {response.text}\n request detail: {encoded_data}'
+            # err_msg = f'Access openai error, Key platform Bean, Key id: {openai_api_keys}, status code: {response.status_code}, status info : {response.text}\n request detail: {encoded_data}'
+            err_msg = f'Access openai error, Key platform Bean, Key id: {openai_api_keys}, status code: {response.status_code}, status info : {response.text}\n'
             logging.error(err_msg)
             time.sleep(random.randint(5, 30) * 0.1)
             max_try -= 1
@@ -200,7 +204,8 @@ def bean_gpt_api(
             logging.error("Request timed out")
             max_try -= 1
         except Exception as e:
-            err_msg = f'Access openai error, Key platform Bean, Key id: {openai_api_keys}, status code: {"N/A"}, status info : {"N/A"}\n request detail: {encoded_data}, Error: {str(e)}'
+            # err_msg = f'Access openai error, Key platform Bean, Key id: {openai_api_keys}, status code: {"N/A"}, status info : {"N/A"}\n request detail: {encoded_data}, Error: {str(e)}'
+            err_msg = f'Access openai error, Key platform Bean, Key id: {openai_api_keys}, status code: {"N/A"}, status info : {"N/A"}\n Error: {str(e)}'
             logging.error(err_msg)
             max_try -= 1
     else:
@@ -210,6 +215,7 @@ def bean_gpt_api(
         response = 'Bean Proxy API Failed...'
 
     output['output'] = response
+    # output['message'] = None
     return output
 
 def request_openai_noexcept(

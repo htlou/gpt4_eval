@@ -19,11 +19,12 @@ export PYTHONPATH="${ROOT_DIR}${PYTHONPATH:+:${PYTHONPATH}}"
 folder_names=("gpt4/" "llama2-7B-chat/" "alpaca-7B/"  "gpt3.5-turbo-1106/" "llama2-13B-chat/" "llama2-70B-chat/" "vicuna-7B/" "vicuna-13B-v1.5/" "vicuna-33B-v1.3/" "claude2/" "beaver/" "gpt3.5-turbo-1106/")
 
 export LOGLEVEL="${LOGLEVEL:-WARNING}"
-INPUT_PATH=""
+INPUT_PATH="0802_eval_4.json"
 OUTPUT_PATH=""
 OUTPUT_FOLDER=""
 OUTPUT_NAME=""
 MODEL=""
+INPUT_TYPE="image-compare"
 PLATFORM="openai"
 
 while [[ "$#" -gt 0 ]]; do
@@ -36,6 +37,10 @@ while [[ "$#" -gt 0 ]]; do
 			;;
 		--folder-name)
 			folder_names=("")
+			shift
+			;;
+		--type)
+			INPUT_TYPE=$1
 			shift
 			;;
 		*)
@@ -63,6 +68,6 @@ python3 main.py --debug \
     --openai-api-key-file ${SCRIPT_DIR}/config/openai_api_keys.txt \
     --input-file ${SCRIPT_DIR}/${INPUT_PATH} \
     --cache-dir ${SCRIPT_DIR}/.cache/${INPUT_PATH}${SCRIPT_NAME_WITHOUT_EXTENSION} \
-	--num-workers 30 \
-	--type "safety" \
+	--num-workers 50 \
+	--type ${INPUT_TYPE} \
     --shuffle 
